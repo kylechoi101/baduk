@@ -16,7 +16,7 @@
 </style></head><body>
 <div id="bar">
  <span id="title">Baduk</span>
- <span class="nav on" data-p="1">1 · Demo</span><span class="nav" data-p="2">2 · Cohort×games</span><span class="nav" data-p="3">3 · Compare 4</span><span class="nav" data-p="4">4 · Waveforms</span><span class="nav" data-p="5">5 · Model (M4)</span>
+ <span class="nav on" data-p="1">1 · Demo</span><span class="nav" data-p="2">2 · Cohort×games</span><span class="nav" data-p="3">3 · Compare 4</span><span class="nav" data-p="4">4 · Waveforms</span><span class="nav" data-p="5">5 · Model (E1)</span>
  <span class="grow"></span>
  <span class="grp" id="cohSel"></span>
  <span class="grp" id="colorSel">color:<span class="btn" data-m="time">time</span><span class="btn" data-m="stone">stone</span><span class="btn" data-m="game">game</span></span>
@@ -60,7 +60,7 @@ const rnd=new THREE.WebGLRenderer({antialias:true,canvas:document.getElementById
 const cam=new THREE.PerspectiveCamera(50,1,1,4000);cam.position.set(150,115,185);
 const ctr=new THREE.OrbitControls(cam,rnd.domElement);ctr.target.set(0,52,0);ctr.autoRotate=true;ctr.autoRotateSpeed=.45;ctr.enableDamping=true;
 const wave=document.getElementById("wave"),wx=wave.getContext("2d");
-// ---- M4 equation (page 5) ----
+// ---- E1 equation (page 5) ----
 const GAMES=NAMES.map((_,q)=>{const c=COH[q],gs=[];let cur=-1,o=null;
   for(let i=0;i<c.n;i++){const gi=c.gi[i];if(gi!==cur){cur=gi;o={x:[],y:[],c:[]};gs.push(o);}o.x.push(c.px[i]);o.y.push(c.py[i]);o.c.push(c.cc[i]);}return gs;});
 function virCSS(f){const v=vir(f);return "rgb("+(v[0]*255|0)+","+(v[1]*255|0)+","+(v[2]*255|0)+")";}
@@ -91,7 +91,7 @@ function drawModel(){const list=GAMES[cohP],g=Math.min(gP5,list.length-1),game=l
   const key=cohP+"/"+g;
   if(key!==curveKey){curve=new Float32Array(game.x.length);for(let s=1;s<game.x.length;s++){const r=m4(game,s);const id=game.y[s]*19+game.x[s];curve[s]=-Math.log2((r.P[id]||1e-12)+1e-12);}curveKey=key;}
   const rx=ox+SD+44,rw=Math.max(180,W-rx-26),ry=oy+34,rh=Math.round((SD-100)*0.55),YMB=10,nM=game.x.length;
-  wx.fillStyle="#cfd8e3";wx.font="13px system-ui";wx.fillText("M4 predictability — surprisal per move (bits)",rx,ry-14);
+  wx.fillStyle="#cfd8e3";wx.font="13px system-ui";wx.fillText("E1 predictability — surprisal per move (bits)",rx,ry-14);
   wx.fillStyle="#7d8aa0";wx.font="11px system-ui";wx.fillText(NAMES[cohP]+" · game "+g+" · "+nM+" moves",rx,ry-1);
   for(let b=0;b<=YMB;b+=2){const yy=ry+rh-(b/YMB)*rh;wx.strokeStyle="#161d2b";wx.lineWidth=1;wx.beginPath();wx.moveTo(rx,yy);wx.lineTo(rx+rw,yy);wx.stroke();wx.fillStyle="#5b6b85";wx.font="10px system-ui";wx.fillText(b+"b",rx-22,yy+3);}
   const cx2=8.49,cy=ry+rh-(Math.min(cx2,YMB)/YMB)*rh;wx.strokeStyle="#3a2a4a";wx.setLineDash([4,4]);wx.beginPath();wx.moveTo(rx,cy);wx.lineTo(rx+rw,cy);wx.stroke();wx.setLineDash([]);wx.fillStyle="#6b5a7a";wx.fillText("chance",rx+rw-44,cy-4);
@@ -101,15 +101,15 @@ function drawModel(){const list=GAMES[cohP],g=Math.min(gP5,list.length-1),game=l
   const cmX=rx+((t-1)/Math.max(1,nM-2))*rw;wx.strokeStyle="#ffd24a";wx.lineWidth=2;wx.beginPath();wx.moveTo(cmX,ry);wx.lineTo(cmX,ry+rh);wx.stroke();
   wx.fillStyle="#ffd24a";wx.beginPath();wx.arc(cmX,ry+rh-(Math.min(curve[t],YMB)/YMB)*rh,4,0,7);wx.fill();
   const hit=top===game.y[t]*19+game.x[t];
-  wx.fillStyle="#cfd8e3";wx.font="13px system-ui";wx.fillText("move "+(t+1)+": "+curve[t].toFixed(2)+" bits  "+(hit?"M4 top-pick ✓":"M4 top-pick ✗"),rx,ry+rh+20);
-  wx.fillStyle="#6b7890";wx.font="11px system-ui";["low = M4 predicted it (local response) · spike = surprising / deep move","board heat = M4 predicted P(next); yellow = played, green = M4 top pick"].forEach((s,i)=>wx.fillText(s,rx,ry+rh+40+i*16));
-  const byy0=ry+rh+78;wx.fillStyle="#cfd8e3";wx.font="12px system-ui";wx.fillText("M4 benchmark across baduk cohorts (avg surprisal · top-1 hit):",rx,byy0);
+  wx.fillStyle="#cfd8e3";wx.font="13px system-ui";wx.fillText("move "+(t+1)+": "+curve[t].toFixed(2)+" bits  "+(hit?"E1 top-pick ✓":"E1 top-pick ✗"),rx,ry+rh+20);
+  wx.fillStyle="#6b7890";wx.font="11px system-ui";["low = E1 predicted it (local response) · spike = surprising / deep move","board heat = E1 predicted P(next); yellow = played, green = E1 top pick"].forEach((s,i)=>wx.fillText(s,rx,ry+rh+40+i*16));
+  const byy0=ry+rh+78;wx.fillStyle="#cfd8e3";wx.font="12px system-ui";wx.fillText("E1 benchmark across baduk cohorts (avg surprisal · top-1 hit):",rx,byy0);
   const bbx=rx+96,bbw=Math.min(190,rw-110);
   BENCH.forEach((bm,i)=>{const yy=byy0+19+i*19,on=i===cohP,f=Math.min(1,bm.surp/8.49);
     wx.fillStyle=on?"#fff":"#9fb0c8";wx.font=(on?"600 ":"")+"11px system-ui";wx.fillText(bm.name,rx,yy+3);
     wx.fillStyle=on?"#4fc3f7":"#243a52";wx.fillRect(bbx,yy-7,bbw*f,10);
     wx.fillStyle=on?"#cfd8e3":"#7d8aa0";wx.font="10px system-ui";wx.fillText(bm.surp.toFixed(2)+"b · "+bm.top1.toFixed(0)+"%",bbx+bbw+8,yy+3);});
-  wx.fillStyle="#6b7890";wx.font="10px system-ui";wx.fillText("shorter bar = M4 predicts that cohort better (lower surprisal)",rx,byy0+22+BENCH.length*19);
+  wx.fillStyle="#6b7890";wx.font="10px system-ui";wx.fillText("shorter bar = E1 predicts that cohort better (lower surprisal)",rx,byy0+22+BENCH.length*19);
   $("g5v").textContent=g;$("m5v").textContent=t+1;}
 let W,H;function layout(){W=innerWidth;H=innerHeight-document.getElementById("bar").offsetHeight;
   rnd.setSize(W,H);wave.width=W*devicePixelRatio;wave.height=H*devicePixelRatio;wave.style.width=W+"px";wave.style.height=H+"px";

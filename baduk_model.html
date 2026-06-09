@@ -2,7 +2,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
-<title>M4 live — equation infused</title><style>
+<title>E1 live — equation infused</title><style>
  html,body{margin:0;height:100%;background:#06070d;color:#cfd8e3;font:13px/1.5 system-ui,sans-serif}
  #bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;padding:10px 16px;background:#0b0e16;border-bottom:1px solid #1c2333}
  #bar h1{font-size:15px;margin:0;color:#fff} .btn{padding:5px 10px;border:1px solid #2a3346;border-radius:6px;background:#141a27;color:#cfd8e3;cursor:pointer;font-size:12px}.btn.on{background:#2b6cff;border-color:#2b6cff;color:#fff}
@@ -11,14 +11,14 @@
  #out{background:#0b0e16;border:1px solid #1c2333;border-radius:10px;padding:14px;margin-top:10px;font-size:13px}
  .big{font-size:22px;color:#fff;font-weight:600} .mut{color:#7d8aa0;font-size:11px} .legend span{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:middle;margin-right:4px}
 </style></head><body>
-<div id="bar"><h1>M4 — the equation, live</h1><span id="coh"></span>
+<div id="bar"><h1>E1 — the equation, live</h1><span id="coh"></span>
  <label>game <b id="gv">0</b></label><input id="game" type="range" min="0" value="0" style="width:120px">
  <label>move <b id="mv">10</b></label><input id="move" type="range" min="1" value="10" style="width:260px"><span id="play" class="btn">▶</span></div>
 <div id="wrap">
  <canvas id="bd" width="600" height="600" style="background:#11151f;border-radius:8px"></canvas>
  <div id="side">
-   <div class="legend"><span style="background:#000;border:1px solid #555"></span>black &nbsp; <span style="background:#fff"></span>white &nbsp; <span style="background:#ffd24a"></span>actual next &nbsp; <span style="background:#33d17a"></span>M4 top pick</div>
-   <div style="margin-top:8px" class="mut">heat = M4's predicted P(next move) over empty points (brighter = higher). The equation:<br>
+   <div class="legend"><span style="background:#000;border:1px solid #555"></span>black &nbsp; <span style="background:#fff"></span>white &nbsp; <span style="background:#ffd24a"></span>actual next &nbsp; <span style="background:#33d17a"></span>E1 top pick</div>
+   <div style="margin-top:8px" class="mut">heat = E1's predicted P(next move) over empty points (brighter = higher). The equation:<br>
    U(z)=θ₁·d(z,opp-last)+θ₂·d(z,own-prev)+θ₃·Δown+θ₄·Δopp+θ₅·(own−opp)+bias(z), softmax over empty cells.</div>
    <div id="out"></div>
  </div></div>
@@ -65,14 +65,14 @@ function draw(){const game=GAMES[cohP][gP];const t=Math.min(mvP,game.x.length-1)
     g2.beginPath();g2.arc(PD+game.x[k]*C,PD+game.y[k]*C,C*0.46,0,7);g2.fill();g2.stroke();}
   // actual next move ring
   const ax=game.x[t],ay=game.y[t];g2.strokeStyle="#ffd24a";g2.lineWidth=3;g2.beginPath();g2.arc(PD+ax*C,PD+ay*C,C*0.5,0,7);g2.stroke();
-  // M4 top pick marker
+  // E1 top pick marker
   const tx=top%19,ty=(top/19|0);g2.strokeStyle="#33d17a";g2.lineWidth=2;g2.beginPath();g2.arc(PD+tx*C,PD+ty*C,C*0.34,0,7);g2.stroke();g2.lineWidth=1;
   // readout
   const pa=P[ay*19+ax]||0,bits=-Math.log2(pa+1e-12),hit=(top===ay*19+ax);
   $("out").innerHTML="<div class='mut'>to move: <b>"+(pcol===0?"Black":"White")+"</b> · move "+(t+1)+" of "+game.x.length+"</div>"+
-   "<div style='margin:8px 0' class='big'>"+(pa*100).toFixed(1)+"%</div><div class='mut'>M4's probability on the move actually played → surprisal <b>"+bits.toFixed(2)+" bits</b></div>"+
-   "<div style='margin-top:8px'>M4 top pick "+(hit?"<b style='color:#33d17a'>= actual ✓</b>":"<b style='color:#ff7043'>≠ actual</b>")+" ("+((P[top]||0)*100).toFixed(1)+"% on its pick)</div>"+
-   "<div class='mut' style='margin-top:10px'>5-feature M4 ≈ 1.21 bits/move overall. It rewards playing near the opponent's last move (locality) — watch it nail answers and miss the deep, non-local moves.</div>";
+   "<div style='margin:8px 0' class='big'>"+(pa*100).toFixed(1)+"%</div><div class='mut'>E1's probability on the move actually played → surprisal <b>"+bits.toFixed(2)+" bits</b></div>"+
+   "<div style='margin-top:8px'>E1 top pick "+(hit?"<b style='color:#33d17a'>= actual ✓</b>":"<b style='color:#ff7043'>≠ actual</b>")+" ("+((P[top]||0)*100).toFixed(1)+"% on its pick)</div>"+
+   "<div class='mut' style='margin-top:10px'>5-feature E1 ≈ 1.21 bits/move overall. It rewards playing near the opponent's last move (locality) — watch it nail answers and miss the deep, non-local moves.</div>";
   $("gv").textContent=gP;$("mv").textContent=t+1;}
 const cohEl=$("coh");NAMES.forEach((nm,i)=>{const b=document.createElement("span");b.className="btn"+(i===cohP?" on":"");b.textContent=nm;b.onclick=()=>{cohP=i;gP=0;[...cohEl.children].forEach((c,j)=>c.classList.toggle("on",j===i));$("game").max=GC[i]-1;$("game").value=0;setGame();};cohEl.appendChild(b);});
 function setGame(){const len=GAMES[cohP][gP].x.length;$("move").max=len-1;if(mvP>len-1)mvP=len-1;$("move").value=mvP;draw();}
