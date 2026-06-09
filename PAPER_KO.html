@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
-<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
 <meta name="referrer" content="no-referrer">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="최경욱" />
   <title>벽을 옮기다</title>
   <style>
     /* Default styles provided by pandoc.
@@ -180,24 +180,26 @@
 <h1 class="title">벽을 옮기다</h1>
 <p class="subtitle">잡음처럼 보이는 두 시계열 사이의 결합 탐지: 바둑에서
 그레인저 인과성까지</p>
+<p class="author">최경욱</p>
+<p class="date">2026년 6월 9일</p>
 </header>
 <p><strong>초록.</strong> 두 시계열이 제각기 무작위 잡음처럼 보이더라도,
 그 둘은 서로 단단히 묶여 있을 수 있다. 바둑은 정답이 주어진 사례를 통해
-이 점을 확인하게 해 준다. 한 색깔의 좌표 수열은 그 자체로는 거의
-예측되지 않지만, 매 수마다 다른 색깔에 응답한다. 그래서 한 판 전체는
-진위를 언제든 대조할 수 있는 하나의 결합된 대상이 된다. 본 연구는 처음에
-해석 가능하고 간결한 예측기를 만들었다. 그러나 성능이 정체하자 예측을
-단념하고, 결합 자체를 직접 재는 쪽으로 방향을 바꾸었다. 이렇게 일반화한
-측정기가 바로 그레인저 인과성(Granger causality)이다.
+이 점을 확인하게 해 주는데, 한 색깔의 좌표 수열은 그 자체로는 거의
+예측되지 않으면서도 매 수마다 다른 색깔에 응답하기 때문이다. 그래서 한
+판 전체는 진위를 언제든 대조할 수 있는 하나의 결합된 대상이 된다. 본
+연구는 처음에 해석 가능하고 간결한 예측기를 만들었으나, 성능이 정체하자
+예측을 단념하고 결합 자체를 직접 재는 쪽으로 방향을 바꾸었다. 이렇게
+일반화한 측정기가 바로 그레인저 인과성(Granger causality)이다.
 바넷·배럿·세스(2009)의 정리에 따르면 그레인저 인과성은 선형 결합의
-벽이다. 결합 가우시안 과정에서는 전이 엔트로피(transfer entropy)와
-일치하며, 그 너머에서 더 건져 낼 것은 없다. 그러나 바둑은 가우시안이
-아니다. 판을 인식하는(board-aware) 렌즈는 작지만 분명히 알아볼 수 있는
-결합을 회수하는데, 이는 선형 측정기가 놓치는 것이다. 백이 흑에 가까이
-응답하는 국지 반응이 바로 그것이다. 렌즈가 풍부해질수록 같은 결합을
-조금씩 더 회수하고, 남는 양은 점점 작아지지만 끝내 사라지지는 않는다. 이
-분해는 행위자들이 서로의 위치에 반응하는 어떤 시스템에도 적용될 수 있다.
-동물의 이동에서부터 원리상 팀 스포츠에 이르기까지가 그 범위다.</p>
+벽이어서, 결합 가우시안 과정에서는 전이 엔트로피(transfer entropy)와
+일치하며 그 너머에서 더 건져 낼 것이 없다. 그러나 바둑은 가우시안이
+아니다. 판을 인식하는(board-aware) 렌즈는 선형 측정기가 놓치는 결합, 곧
+백이 흑에 가까이 응답하는 국지 반응을 작지만 분명히 알아볼 수 있는
+형태로 회수한다. 렌즈가 풍부해질수록 같은 결합을 조금씩 더 회수하니,
+남는 양은 점점 작아지지만 끝내 사라지지는 않는다. 이 분해는 행위자들이
+서로의 위치에 반응하는 어떤 시스템에도 적용될 수 있으며, 그 범위는
+동물의 이동에서부터 원리상 팀 스포츠에까지 이른다.</p>
 <p><strong>일러두기.</strong> 본 논문이 다루는 게임은 바둑(한국어), 圍棋
 / Wéiqí(중국어), 囲碁 / Igo(일본어, 서구 문헌에서는 Go로 표기)이다.
 말뭉치는 주로 한국과 동아시아의 프로 기보에서 가져왔으며, 한국어 관례에
@@ -206,24 +208,24 @@
 <p>바둑에서 두 사람은
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>19</mn><mo>×</mo><mn>19</mn></mrow><annotation encoding="application/x-tex">19 \times 19</annotation></semantics></math>
 격자 위에 번갈아 돌을 놓는다. 규칙을 떼어내고 한 색깔의 좌표만
-시간순으로 따라가 보면, 그 수열은 자기 과거로부터 거의 예측되지 않는다.
-2차 선형 렌즈로 보면 그저 잡음일 뿐이고, 다른 색깔도 사정은 같다.
-그렇다고 두 색깔이 서로 독립인 것은 결코 아니다. 백은 흑에 응답하고 흑은
-백을 압박하니, 한 판은 하나의 결합된 대상이다. 본 연구가 다루려 한
-상황이 바로 이것이다. 따로 보면 잡음 같지만 실은 함께 결정되는 두
-시계열이다. 바둑은 이런 상황을 정답과 함께 내놓는다. 실제 진행을 언제든
-대조해 확인할 수 있기 때문이다.</p>
+시간순으로 따라가 보면, 그 수열은 자기 과거로부터 거의 예측되지 않아 2차
+선형 렌즈로 보면 그저 잡음일 뿐이며, 다른 색깔도 사정은 같다. 그렇다고
+두 색깔이 서로 독립인 것은 결코 아니다. 백은 흑에 응답하고 흑은 백을
+압박하니, 한 판은 하나의 결합된 대상인 셈이다. 본 연구가 다루려 한
+상황이 바로 이것, 곧 따로 보면 잡음 같지만 실은 함께 결정되는 두
+시계열이다. 바둑은 실제 진행을 언제든 대조해 확인할 수 있으므로, 이런
+상황을 정답과 함께 내놓는다.</p>
 <p>문제의식을 던져 준 측정은 단순하다. 수천 판의 프로 기보를 통틀어
 보면, 흑의 가장 최근 수는 백이 다음에 둘 곳의 예측 가능한 부분 가운데 약
-44%를 설명한다. 백 자신의 이력이 이미 설명하는 몫을 넘어선 양이다. 두
-시계열은 따로 떼어 놓으면 잡음을 닮았지만, 나란히 놓고 보면 서로
-결합되어 있다. 본 논문이 던지는 질문은 세 가지다. 그 결합을 어떻게
-정직하게 정량화할 것인가, 그것을 지배하는 근본적 한계는 무엇인가, 실제
-시스템은 그 한계를 얼마나 넘어서 존재하는가.</p>
+44%를 설명하는데, 이는 백 자신의 이력이 이미 설명하는 몫을 넘어선
+양이다. 두 시계열은 따로 떼어 놓으면 잡음을 닮았지만, 나란히 놓고 보면
+서로 결합되어 있는 셈이다. 본 논문이 던지는 질문은 세 가지다. 그 결합을
+어떻게 정직하게 정량화할 것인가, 그것을 지배하는 근본적 한계는 무엇인가,
+그리고 실제 시스템은 그 한계를 얼마나 넘어서 존재하는가.</p>
 <p>여기서 재는 결합은 그레인저(1969)가 형식화하고 슈라이버(2000)가 정보
 이론의 언어로 전이 엔트로피라 다시 서술한 관계다. 본 연구의 기여는
-새로운 추정기에 있지 않다. 그 기계장치를 흔치 않은 출발점에서 다시
-유도하고, 이론이 요구하는 그대로 작동함을 검증하며, 바둑의 결합이
+새로운 추정기에 있지 않다. 그보다는 그 기계장치를 흔치 않은 출발점에서
+다시 유도하고, 이론이 요구하는 그대로 작동함을 검증하며, 바둑의 결합이
 선형-가우시안 한계를 얼마나 넘어 뻗어 있는지를 통제된 조건에서 측정한 데
 있다.</p>
 <h1 id="방법">2. 방법</h1>
@@ -232,9 +234,9 @@
 것이었다. 361개 칸에 대한 조건부 로짓으로, 여기서는 이를 E1이라 부른다.
 발상은 간단하다. 빈 칸
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>
-하나하나를 다음 수의 후보로 점수화한 뒤, 그 점수를 확률 분포로 바꾼다.
-한 칸의 점수, 곧 효용은 칸별 편향에 국지 기하 특징의 가중합을 더한
-값이다. 예측 수는 그 효용에 소프트맥스를 취해 얻는다.</p>
+하나하나를 다음 수의 후보로 점수화한 뒤 그 점수를 확률 분포로 바꾸는
+것이다. 한 칸의 점수, 곧 효용은 칸별 편향에 국지 기하 특징의 가중합을
+더한 값이며, 예측 수는 그 효용에 소프트맥스를 취해 얻는다.</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>b</mi><mi>z</mi></msub><mo>+</mo><munder><mo>∑</mo><mi>k</mi></munder><msub><mi>θ</mi><mi>k</mi></msub><mspace width="0.167em"></mspace><msub><mi>f</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">move</mtext><mo>=</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><msup><mi>e</mi><mrow><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mrow><munder><mo>∑</mo><mrow><msup><mi>z</mi><mo>′</mo></msup><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> empty</mtext></mrow></mrow></munder><msup><mi>e</mi><mrow><mi>U</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>z</mi><mo>′</mo></msup><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">U(z) = b_z + \sum_k \theta_k\, f_k(z), \qquad P(\text{move}=z) = \frac{e^{U(z)}}{\sum_{z&#39; \text{ empty}} e^{U(z&#39;)}}.</annotation></semantics></math></p>
 <p>여기서
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">U(z)</annotation></semantics></math>는
@@ -242,8 +244,8 @@
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>의
 효용이다.
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>b</mi><mi>z</mi></msub><annotation encoding="application/x-tex">b_z</annotation></semantics></math>는
-칸별 편향으로, 맥락과 무관하게 성립하는 위치 사전확률을 흡수한다.
-귀퉁이, 화점, 변에 저마다 다른 기저 빈도를 부여하는 항이다.
+칸별 편향으로, 맥락과 무관하게 성립하는 위치 사전확률을 흡수하며,
+귀퉁이·화점·변에 저마다 다른 기저 빈도를 부여하는 항이다.
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\theta_k</annotation></semantics></math>는
 적합된 가중치이고,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f_k(z)</annotation></semantics></math>는
@@ -253,14 +255,14 @@
 <ul>
 <li><strong>상대의 마지막 돌까지의 거리.</strong>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>에서
-흑의 가장 최근 수까지 잰 체비쇼프(Chebyshev) 거리다. 후보가 상대가 방금
+흑의 가장 최근 수까지 잰 체비쇼프(Chebyshev) 거리로, 후보가 상대가 방금
 둔 곳에 얼마나 가까운지를 말해 준다. 이 가중치는 크기가 가장 크고 부호가
-음이어서, 가까운 칸일수록 높은 점수를 받는다. 그렇게 모델은
+음이어서 가까운 칸일수록 높은 점수를 받으니, 모델은 그렇게
 <em>국지적으로 응답하기</em>를 학습한다. 이 한 특징이 곧 계수로 적힌
-결합이다.</li>
+결합인 셈이다.</li>
 <li><strong>두 수 전 자기 수까지의 거리.</strong>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>에서
-백 자신의 직전 돌까지 잰 체비쇼프 거리다. 자기 모양을 늘리거나 보강하는
+백 자신의 직전 돌까지 잰 체비쇼프 거리로, 자기 모양을 늘리거나 보강하는
 등 자기 플레이와의 연속성을 담는다. 이 가중치도 음이지만 크기는 더
 작다.</li>
 <li><strong>국지 밀도 대비.</strong>
@@ -268,17 +270,17 @@
 둘러싼
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>×</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">5 \times 5</annotation></semantics></math>
 창 안에서 자기 돌과 상대 돌 수의 차이, 그리고 상대의 마지막 돌을
-기준으로 잰 같은 대비다. 후보가 우호적 영역에 있는지 다투는 영역에
+기준으로 잰 같은 대비다. 이는 후보가 우호적 영역에 있는지 다투는 영역에
 있는지를, 곧 자기 세력을 보강하는지 상대 영역으로 밀고 들어가는지를 일러
 준다.</li>
 </ul>
 <p>선두 가중치는 결합을 곧바로 부호화한다. <em>상대가 방금 둔 곳
-가까이에 두어라.</em> 예측기로서 E1은 약하다. 한 수가 담을 수 있는
-8.49비트 가운데 약 2.4비트를 포착한 뒤 정체한다. 같은 자리에서 합성곱
+가까이에 두어라.</em> 예측기로서 E1은 약해서, 한 수가 담을 수 있는
+8.49비트 가운데 약 2.4비트를 포착한 뒤 정체하는데, 같은 자리에서 합성곱
 신경망은 약 4.5비트에 이른다.</p>
 <p>그러나 정작 풀어야 할 문제는 예측이 아니었다. 결합을 보려고 어느 한
-시계열의 좋은 예측기가 필요한 것은 아니다. 정작 필요한 것은 두 예측기
-사이의 차이다. 본 연구는 두 모델을 적합한다. 하나는 시계열
+시계열의 좋은 예측기가 필요한 것은 아니며, 정작 필요한 것은 두 예측기
+사이의 차이다. 그래서 본 연구는 두 모델을 적합한다. 하나는 시계열
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>를
 자기 과거만으로 예측하는 <em>자기(self)</em> 모델이고, 다른 하나는
 여기에 다른 시계열
@@ -292,9 +294,9 @@
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">p</mi></mrow><mo>=</mo><mstyle displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><msub><mrow><mi mathvariant="normal">log</mi><mo>&#8289;</mo></mrow><mn>2</mn></msub><mfrac><mrow><mrow><mi mathvariant="normal">Var</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>Y</mi><mi>t</mi></msub><mo>∣</mo><msub><mi>Y</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mrow><mi mathvariant="normal">Var</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>Y</mi><mi>t</mi></msub><mo>∣</mo><msub><mi>Y</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo>,</mo><mspace width="0.167em"></mspace><msub><mi>X</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mspace width="1.0em"></mspace><mtext mathvariant="normal">(bits)</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathrm{gap} = \tfrac{1}{2}\log_2 \frac{\operatorname{Var}(Y_t \mid Y_{&lt;t})}{\operatorname{Var}(Y_t \mid Y_{&lt;t},\, X_{&lt;t})} \quad \text{(bits)}.</annotation></semantics></math></p>
 <p>같은 얕은 모델이 양쪽에 똑같이 들어가므로, 예측기로서 E1이 지닌
 약점은 잣대로서의 역할을 흔들지 않는다. 격차를 단독으로 보고하지는
-않는다. 허위 탐지를 막기 위해서다. 독립인 두 임의보행조차 우연히 강하게
+않는데, 허위 탐지를 막기 위해서다. 독립인 두 임의보행조차 우연히 강하게
 상관된 듯 보일 수 있기 때문이다(Phillips, 1986). 그래서 격차를 대리
-표본(surrogate)과 견준다. 이 대리 표본은 각 시계열의 자기 통계량은
+표본(surrogate)과 견주며, 이 대리 표본은 각 시계열의 자기 통계량은
 그대로 두되 둘 사이의 정렬만 깨뜨린다(Theiler 외, 1992). 대리 표본을
 넘어서지 못하는 격차는 0으로 처리한다.</p>
 <h2 id="그레인저-동등성">2.2 그레인저 동등성</h2>
@@ -322,8 +324,8 @@
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>∝</mo><msup><mi>ρ</mi><mn>2</mn></msup><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msup><mi>ρ</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">F \propto \rho^2/(1-\rho^2)</annotation></semantics></math>이니,
 둘은 같은 편상관
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ρ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\rho^2</annotation></semantics></math>를
-따라 나란히 커진다. 정보의 언어로 옮기면 격차는 게웨키(1982)의 선형
-피드백 측도다. 또한 바넷·배럿·세스(2009)는 결합 가우시안 과정에서
+따라 나란히 커지기 때문이다. 정보의 언어로 옮기면 격차는 게웨키(1982)의
+선형 피드백 측도이며, 또한 바넷·배럿·세스(2009)는 결합 가우시안 과정에서
 그레인저 인과성이 전이 엔트로피와 같음을 증명했다,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">E</mi></mrow><mrow><mi>X</mi><mo>→</mo><mi>Y</mi></mrow></msub><mo>=</mo><mstyle displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><mi>F</mi></mrow><annotation encoding="application/x-tex">\mathrm{TE}_{X \to Y} = \tfrac{1}{2}F</annotation></semantics></math>.
 따라서 선형-가우시안 데이터에서는 격차와
@@ -333,22 +335,22 @@
 <p>이 동등성이 어디까지 성립하는지 밝히기 위해, 본 연구는 의도적으로
 비가우시안인 혁신항(왜정규분포 skew-normal,
 스튜던트-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>,
-라플라스)으로 구동되는 선형 시스템을 생성했다. 그런 다음 두 가지
-방식으로 결합시켰다. 하나는 조건부 평균을 통한 결합이다. 여기서는
+라플라스)으로 구동되는 선형 시스템을 생성한 뒤 두 가지 방식으로
+결합시켰다. 하나는 조건부 평균을 통한 결합으로, 여기서는
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>가
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>의
-평균을 옮긴다. 다른 하나는 조건부 분산을 통한 결합이다. 여기서는
+평균을 옮긴다. 다른 하나는 조건부 분산을 통한 결합으로, 여기서는
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>가
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>의
 평균은 건드리지 않은 채 산포만 변조한다. 각 시스템에서 선형 격차를
-잔차-의존 검정과 견주었다. 이 검정은 임의 차수의 의존성을 탐지하는 거리
-상관(distance correlation, Székely 외, 2007)에 기반하며,
+잔차-의존 검정과 견주었는데, 이 검정은 임의 차수의 의존성을 탐지하는
+거리 상관(distance correlation, Székely 외, 2007)에 기반하며
 순열(permutation) 귀무분포로 보정했다.</p>
 <h2 id="바둑과-그-통제">2.4 바둑과 그 통제</h2>
 <p>바둑에서는 흑→백 결합을 두 가지 표현으로 측정했다. <em>스칼라
-렌즈</em>는 각 좌표 축을 따로 다룬다. <em>판 인식 렌즈</em>는 완전한
-2차원 수를 그대로 쓰므로 어떤 기하 관계든 잡아낼 수 있다. 진짜 결합을
-인공물에서 갈라내기 위해 세 가지 통제를 두었다. 첫째는
+렌즈</em>는 각 좌표 축을 따로 다루는 반면, <em>판 인식 렌즈</em>는
+완전한 2차원 수를 그대로 쓰므로 어떤 기하 관계든 잡아낼 수 있다. 진짜
+결합을 인공물에서 갈라내기 위해서는 세 가지 통제를 두었다. 첫째는
 교차적합(cross-fitted) 랜덤 포레스트로, 완전한 비선형 조건부 평균을 걷어
 낸다. 둘째는 무(無)결합 대리 표본으로, 귀무로 읽혀야 한다. 셋째는 결정적
 대리 표본으로, 바둑의 정확한 평균 결합은 그대로 담되 같은 격자에 가둔 채
@@ -359,23 +361,23 @@
 <p>일반화한 측정기는 정확히 그레인저 인과성으로 환원된다. 합성 가우시안
 데이터에서 그
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
-값은 표준 소프트웨어의 결과와 같다. 표본이 커질수록 해석적으로 알려진
+값은 표준 소프트웨어의 결과와 같으며, 표본이 커질수록 해석적으로 알려진
 모집단 값으로 수렴하고, 거짓양성률은 올바르게 조정되며, 방향까지
 회복되어 역방향 채널은 귀무로 읽힌다. 2.2절의 동등성에 따르면,
 선형-가우시안 데이터에서는 어떤 추정기도 이보다 더 많은 결합을 끌어내지
-못한다. 전이 엔트로피, 조건부 상호정보량(conditional mutual
-information), 예측 격차가 모두 맞아떨어진다. 이것이 벽이다.
+못하니, 전이 엔트로피와 조건부 상호정보량(conditional mutual
+information)과 예측 격차가 모두 맞아떨어진다. 이것이 벽이다.
 선형-가우시안 결합에 대해서는 그레인저가 곧 한계다.</p>
 <h2 id="벽은-무엇에-달려-있는가">3.2 벽은 무엇에 달려 있는가</h2>
-<p>이 동등성은 가우시안성을 요구한다. 합성 실험 묶음은 그 가우시안성이
+<p>이 동등성은 가우시안성을 요구하는데, 합성 실험 묶음은 그 가우시안성이
 정확히 무엇을 보장하는지 보여 준다. 첫째, 벽이 기대는 것은 가우시안 그
 자체가 아니라 <em>평균에서 선형</em>이라는 성질이다. 결합이 조건부
 평균을 통해 작용하는 한, 잡음이 아무리 비가우시안이어도 그레인저는 그
 결합을 온전히 잡아낸다. 관건은 잡음의 모양이 아니라 어느 적률이 결합을
-싣고 있느냐다. 분산에 실린 결합은 평균 기반 방법의 눈에는 들어오지 않고
-잔차-의존 검정에만 모습을 드러낸다. 계량경제학에서 익히 알려진 변동성
-전이(volatility spillover)가 바로 이것이다(Engle, 1982). 둘째,
-가우시안에서 벗어나면 격차는 하한으로 내려앉는다,
+싣고 있느냐인 셈이다. 분산에 실린 결합은 평균 기반 방법의 눈에는
+들어오지 않고 잔차-의존 검정에만 모습을 드러내는데, 계량경제학에서 익히
+알려진 변동성 전이(volatility spillover)가 바로 이것이다(Engle, 1982).
+둘째, 가우시안에서 벗어나면 격차는 하한으로 내려앉는다,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><mi>F</mi><mo>≤</mo><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">E</mi></mrow></mrow><annotation encoding="application/x-tex">\tfrac{1}{2}F \le \mathrm{TE}</annotation></semantics></math>.
 선형 격차는 결합의 2차 성분만 잡으므로, 고차 적률이나 비선형 구조에 깃든
 것은 무엇이든
@@ -384,53 +386,52 @@ information), 예측 격차가 모두 맞아떨어진다. 이것이 벽이다.
 그레인저를 넘어 결합을 실어 나를 수 있는 자리다.</p>
 <h2 id="바둑은-그레인저를-얼마나-넘어-존재하는가">3.3 바둑은 그레인저를
 얼마나 넘어 존재하는가</h2>
-<p>바둑은 가우시안이 아니다. 그 수는 유계 정수다. 바둑의 선형 결합은
-그레인저가 정확히 잡아내며, 두 축에 걸쳐 약 0.44비트다. 스칼라 렌즈는
-의존성을 더 남긴다. 처음에는 이것이 분산 채널의 돌파처럼 보였으나,
-통제들은 그렇지 않음을 드러냈다. 교차적합 포레스트로 완전한 비선형
-평균을 걷어 내도 그 의존성은 사라지지 않고, 무결합 대리 표본은 귀무로
-읽힌다. 따라서 그것은 모델 오설정도 파이프라인 인공물도 아니다. 또
-유계이면서 분산이 일정한 결정적 대리 표본은 그 신호의 약한 판본만
-되살린다. 그러니 진짜 분산 결합도 아니다. 남은 것은 스칼라 렌즈로는 담을
-수 없는 구조다. 스칼라 렌즈가 판을 보지 못하기 때문이다.</p>
+<p>바둑은 가우시안이 아니며, 그 수는 유계 정수다. 바둑의 선형 결합은
+그레인저가 정확히 잡아내며, 두 축에 걸쳐 약 0.44비트다. 한편 스칼라
+렌즈는 의존성을 더 남기는데, 처음에는 이것이 분산 채널의 돌파처럼
+보였으나 통제들은 그렇지 않음을 드러냈다. 교차적합 포레스트로 완전한
+비선형 평균을 걷어 내도 그 의존성은 사라지지 않고, 무결합 대리 표본은
+귀무로 읽힌다. 따라서 그것은 모델 오설정도 파이프라인 인공물도 아니다.
+또 유계이면서 분산이 일정한 결정적 대리 표본은 그 신호의 약한 판본만
+되살리니, 진짜 분산 결합도 아니다. 남은 것은 스칼라 렌즈로는 담을 수
+없는 구조다. 스칼라 렌즈가 판을 보지 못하기 때문이다.</p>
 <p>판 인식 렌즈는 여기에 0.06비트를 더 건져 내며, 그 이득은 순전히
-비선형이다. 교차항을 가진 선형 2차원 렌즈는 아무것도 보태지 못한다.
-회수된 결합은 국지 반응이다. 백의 응답은 흑으로부터 한 점 이내에 22%, 두
-점 이내에 41%, 세 점 이내에 56% 떨어진 곳에 놓이며, 백→흑 거리의
-중앙값은 2.24다. 섞은 귀무에서의 9.06과 견주면 확연히 가깝다. 이 결합의
-성격은 두 가지로 규정된다. 첫째, 그것은 매끄럽기보다 <em>날카롭다.</em>
-매끄러운 다항 특징이 회수하는 몫은 4%에 그치고, 나머지는 포레스트가
-회수하기 때문이다. 둘째, 그것은 판의 가장자리가 <em>빚어낸다.</em> 백과
-흑 사이의 오프셋이 흑이 어디에 놓였는지에 따라 달라지기 때문이다. 이
-가운데 어느 것도 좌표 원점에 기대지 않는다. 격차와 포레스트와 거리
-검정이 모두 평행이동과 척도변환에 불변인 차이와 분산에 기반하기
-때문이다.</p>
+비선형이다. 교차항을 가진 선형 2차원 렌즈는 아무것도 보태지 못하기
+때문이다. 회수된 결합은 국지 반응이다. 백의 응답은 흑으로부터 한 점
+이내에 22%, 두 점 이내에 41%, 세 점 이내에 56% 떨어진 곳에 놓이며, 백→흑
+거리의 중앙값은 2.24인데, 섞은 귀무에서의 9.06과 견주면 확연히 가깝다.
+이 결합의 성격은 두 가지로 규정된다. 첫째, 그것은 매끄럽기보다
+<em>날카롭다.</em> 매끄러운 다항 특징이 회수하는 몫은 4%에 그치고
+나머지는 포레스트가 회수하기 때문이다. 둘째, 그것은 판의 가장자리가
+<em>빚어낸다.</em> 백과 흑 사이의 오프셋이 흑이 어디에 놓였는지에 따라
+달라지기 때문이다. 이 가운데 어느 것도 좌표 원점에 기대지 않는데, 격차와
+포레스트와 거리 검정이 모두 평행이동과 척도변환에 불변인 차이와 분산에
+기반하기 때문이다.</p>
 <p>이로써 이전의 해석을 바로잡는다. 그 해석은 바둑이 비선형 구조 하나
-없이 벽에 평평하게 붙어 있는 것처럼 보았다. 그러나 그것은 인공물이었다.
+없이 벽에 평평하게 붙어 있는 것처럼 보았으나, 그것은 인공물이었다.
 스칼라 표현이 너무 거칠어 2차원 모양을 담아내지 못한 탓이다. 작지만
-실재하는 비선형 결합은 분명히 존재한다. 그것은 누구나 알아볼 수 있는
-바둑, 곧 접촉과 접근의 플레이이며, E1의 거리 특징이 이미 부호화한 바로
-그 관계다. 이 결합은 오직 바둑이 가우시안이 아니기에 손에 잡힌다. 다시
-말해
+실재하는 비선형 결합은 분명히 존재하며, 그것은 누구나 알아볼 수 있는
+바둑, 곧 접촉과 접근의 플레이이자 E1의 거리 특징이 이미 부호화한 바로 그
+관계다. 이 결합은 오직 바둑이 가우시안이 아니기에 손에 잡히니, 다시 말해
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><mi>F</mi></mrow><annotation encoding="application/x-tex">\tfrac{1}{2}F</annotation></semantics></math>가
 전이 엔트로피에 못 미치는 바로 그 여백이다. 렌즈가 좋아질수록 잔차는
 사라지는 것이 아니라 줄어든다. 스칼라-선형 렌즈는 0.44비트를, 판 인식
-렌즈는 0.50비트를 준다. 그렇게 남은 양은 모델 없는 전이-엔트로피 상한을
+렌즈는 0.50비트를 주며, 그렇게 남은 양은 모델 없는 전이-엔트로피 상한을
 향해 물러서되 끝내 닿지는 않는다. 같은 분해를 야생 개코원숭이
 무리(Strandburg-Peshkin 외, 2015)라는 연속 시스템에 적용해도 판정은
-같다. 몇 백분의 일 비트에 불과한, 작지만 인증된 결합이 있을 뿐 극적인
+같아서, 몇 백분의 일 비트에 불과한 작지만 인증된 결합이 있을 뿐 극적인
 돌파는 없다.</p>
 <h1 id="고찰">4. 고찰</h1>
 <p>본 연구는 새로운 탐지기를 만든 것이 아니다. 그레인저와 전이 엔트로피
 계열을 흔치 않은 통로에서, 곧 잡음처럼 보이는 보드게임에서 다시 유도했을
-뿐이다. 그리고 정답이 주어진 시스템에서 그것이 선형 결합에 대해서는
-완전하고 그 밖에서는 하한임을 확인했을 따름이다. 통상의 그레인저 검정은
-더 낮은 비용으로 이 측정기에 맞먹는다. 이 도구는 그것이 다시 표현하는
-계열보다 새롭지도 낫지도 않다. 그 가치는 거기에 이르는 경로와 통제된
-측정에 있다.</p>
+뿐이며, 정답이 주어진 시스템에서 그것이 선형 결합에 대해서는 완전하고 그
+밖에서는 하한임을 확인했을 따름이다. 통상의 그레인저 검정은 더 낮은
+비용으로 이 측정기에 맞먹으니, 이 도구는 그것이 다시 표현하는 계열보다
+새롭지도 낫지도 않다. 그 가치는 거기에 이르는 경로와 통제된 측정에
+있다.</p>
 <p>그 측정에는 분명한 모양이 있다. 본 연구는 벽을 깨지 않는다. 벽을
 옮긴다. 렌즈가 풍부해질수록 같은 결합을 조금씩 더 잡고 조금씩 덜
-남기면서, 모델 없는 상한에 다가선다. 그 상한은 가우시안 그레인저가
+남기면서 모델 없는 상한에 다가서는데, 그 상한은 가우시안 그레인저가
 등식으로, 비가우시안 시스템이 한계(bound)로 설정하는 자리다.</p>
 <p>이 분해는 행위자들이 서로의 위치에 반응하는 어떤 시스템에도
 일반화된다. 선형 결합은 동일축 항(L1)과 교차축 항(L2)으로 나뉘고, 벽
@@ -438,18 +439,19 @@ information), 예측 격차가 모두 맞아떨어진다. 이것이 벽이다.
 부르고 싶은 유혹이 들지만, 그렇게 하면 본 연구의 스칼라 측정기가 불러온
 오류를 되풀이하게 된다. L1과 L2는 한 번에 한 축씩 본 것이 아니라 완전한
 상태에서 함께 평가한 것이며, 결국 제대로 된 다변량 그레인저 인과성일
-뿐이다. 그러므로 벽은 L1과 L2를 합한 자리에 놓인다. 바둑은 교차축 선형
-항이 0이라 사실상 L2가 없고, 약간의 L3가 있다. 다른 시스템은 다른 자리에
-놓일 수 있다. 선수들이 2차원 공간에서 서로를 쫓는 팀 스포츠를 보자.
-수비수가 공격수를 따라 움직이는 것은 L2 관계이고, 간격과 대형은 L3다. 이
-예측은 구체적이고 반증 가능하다. 축구는 L2를 더 많이, 농구는 L3를 더
-많이 보여야 하며, 측정기는 같은 대리-보정된 0을 기준으로 특징을 골라
-둘을 갈라낸다. 추적 데이터가 없어 이를 검증하지는 못했다. 다만 이 방법은
-이미 이산 플레이와 동물 이동을 가로질러 이식되었고, 팀 스포츠 추적도
-같은 부류에 속한다. 정직하게 주장할 수 있는 바는 이식성이다. 방법은 좌표
-기반 결합을 가로질러 옮겨 가지만, 특정 모델과 렌즈는 그렇지 못하다.</p>
+뿐이기 때문이다. 그러므로 벽은 L1과 L2를 합한 자리에 놓인다. 바둑은
+교차축 선형 항이 0이라 사실상 L2가 없고 약간의 L3가 있지만, 다른
+시스템은 다른 자리에 놓일 수 있다. 선수들이 2차원 공간에서 서로를 쫓는
+팀 스포츠를 보자. 수비수가 공격수를 따라 움직이는 것은 L2 관계이고,
+간격과 대형은 L3다. 이 예측은 구체적이고 반증 가능하다. 축구는 L2를 더
+많이, 농구는 L3를 더 많이 보여야 하며, 측정기는 같은 대리-보정된 0을
+기준으로 특징을 골라 둘을 갈라낸다. 추적 데이터가 없어 이를 검증하지는
+못했지만, 이 방법은 이미 이산 플레이와 동물 이동을 가로질러 이식되었고
+팀 스포츠 추적도 같은 부류에 속한다. 정직하게 주장할 수 있는 바는
+이식성이다. 방법은 좌표 기반 결합을 가로질러 옮겨 가지만, 특정 모델과
+렌즈는 그렇지 못하다.</p>
 <p>이 작업은 두 색깔의 돌이 잡음처럼 보였으나 실은 그렇지 않았기에
-시작되었다. 그리고 끝맺는 자리는 두 곳이다. 하나는 본 연구가 깨뜨린 벽이
+시작되었으며, 끝맺는 자리는 두 곳이다. 하나는 본 연구가 깨뜨린 벽이
 아니라 렌즈가 날카로워질수록 끊임없이 밀려나는 벽이고, 다른 하나는
 행위자들이 서로의 위치에 응답하는 어떤 시스템에도 적용될 분해다.</p>
 <h1 id="references">References</h1>
