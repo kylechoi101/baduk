@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Moving the Wall</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Moving the Wall</h1>
+<p class="subtitle">Coupling detection between two noise-like streams,
+from baduk to Granger causality</p>
+</header>
+<p><strong>Abstract.</strong> Two time-dependent streams can each look
+like random noise and still be bound tightly together. Baduk lets me
+prove it on a case with ground truth: one color’s sequence of
+coordinates is nearly unpredictable on its own, yet it answers the other
+color move by move, so the whole game is a single coupled object whose
+truth I can always check. I drafted an interpretable and compact
+predictor, but it plateaued, so I stopped trying to predict and measured
+the coupling directly. The generalized meter is exactly Granger
+causality, and by a theorem of Barnett, Barrett, and Seth (2009) Granger
+is the wall of linear coupling: for jointly Gaussian processes it equals
+transfer entropy, with nothing recoverable past it. Baduk, however, is
+not Gaussian, and a board-aware lens recovers a small, recognizable
+coupling the linear meter cannot see, the local response of white
+answering black at close range. A richer lens recovers a little more of
+the same coupling, and a little more again, the leftover always smaller
+but never gone. The same decomposition should travel to any system whose
+agents respond to one another’s positions, from animal movement to, in
+principle, team sports.</p>
+<p><strong>Terminology.</strong> The game studied in this paper is 바둑
+/ Baduk (Korean), 圍棋 / Wéiqí (Chinese), 囲碁 / Igo (Japanese, rendered
+as Go in Western literature). The corpus is drawn predominantly from
+Korean and East Asian professional play; I follow the Korean convention
+and use Baduk throughout.</p>
+<h1 id="introduction">1. Introduction</h1>
+<p>In baduk, two players alternate stones on a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>19</mn><mo>×</mo><mn>19</mn></mrow><annotation encoding="application/x-tex">19 \times 19</annotation></semantics></math>
+grid. If I discard the rules and follow only one color’s coordinates
+over time, the sequence is nearly unpredictable from its own past; to a
+second-order linear lens it looks like noise. The same holds for the
+other color. Yet the two colors are plainly not independent. White
+answers black and black presses white, so the game is a single coupled
+object. This is the situation I set out to study: two individually
+noise-like streams that are jointly determined. Baduk supplies it with
+an answer key, because the true course of play is always available to
+check against.</p>
+<p>The motivating measurement is simple. Across thousands of
+professional games, black’s most recent move explains roughly 44% of the
+predictable part of where white plays next, beyond what white’s own
+history already supplies. Apart, the streams resemble noise. Together,
+they are coupled. The questions this paper pursues are how to quantify
+that coupling honestly, what fundamental limit governs it, and how far a
+real system lives past that limit.</p>
+<p>The coupling I measure is the relation Granger (1969) formalized and
+Schreiber (2000) recast in information terms as transfer entropy. My
+contribution is not a new estimator. It is a re-derivation of that
+machinery from an unusual starting point, a verification that it behaves
+exactly as theory requires, and a controlled measurement of how far
+baduk’s coupling extends past the linear-Gaussian limit.</p>
+<h1 id="methods">2. Methods</h1>
+<h2 id="from-a-predictor-to-a-coupling-meter">2.1 From a predictor to a
+coupling meter</h2>
+<p>My first approach was to predict the next move with a compact,
+interpretable model, here called E1: a conditional logit over the 361
+cells. The idea is to score every empty cell
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>
+as a candidate for the next move and turn those scores into a
+probability distribution. The score, or utility, of a cell is a per-cell
+bias plus a weighted sum of local-geometry features, and the predicted
+move is a softmax over the utilities,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>b</mi><mi>z</mi></msub><mo>+</mo><munder><mo>∑</mo><mi>k</mi></munder><msub><mi>θ</mi><mi>k</mi></msub><mspace width="0.167em"></mspace><msub><mi>f</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>P</mi><mo stretchy="false" form="prefix">(</mo><mtext mathvariant="normal">move</mtext><mo>=</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><msup><mi>e</mi><mrow><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mrow><munder><mo>∑</mo><mrow><msup><mi>z</mi><mo>′</mo></msup><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> empty</mtext></mrow></mrow></munder><msup><mi>e</mi><mrow><mi>U</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>z</mi><mo>′</mo></msup><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">U(z) = b_z + \sum_k \theta_k\, f_k(z), \qquad P(\text{move}=z) = \frac{e^{U(z)}}{\sum_{z&#39; \text{ empty}} e^{U(z&#39;)}}.</annotation></semantics></math></p>
+<p>Here
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>U</mi><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">U(z)</annotation></semantics></math>
+is the utility of candidate cell
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>b</mi><mi>z</mi></msub><annotation encoding="application/x-tex">b_z</annotation></semantics></math>
+is a per-cell bias that absorbs position priors holding regardless of
+context, since corners, star points, and edges are played at different
+base rates;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\theta_k</annotation></semantics></math>
+are fitted weights; and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>z</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f_k(z)</annotation></semantics></math>
+are geometric features evaluated at the candidate cell. The softmax
+normalizes the utilities into a distribution over all empty cells, so a
+higher utility means a more likely move. The features are deliberately
+simple and entirely local:</p>
+<ul>
+<li><strong>Distance to the opponent’s last stone.</strong> The
+Chebyshev distance from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>
+to black’s most recent move, i.e. how close the candidate sits to where
+the opponent just played. Its weight is the largest in magnitude and
+negative, so nearer cells score higher and the model learns to
+<em>answer locally</em>. This single feature is the coupling, written as
+a coefficient.</li>
+<li><strong>Distance to my own move two earlier.</strong> The Chebyshev
+distance from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>
+to white’s own previous stone, capturing continuity with one’s own play,
+such as extending or reinforcing one’s own shapes. Its weight is also
+negative but smaller.</li>
+<li><strong>Local density contrasts.</strong> Within a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mo>×</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">5 \times 5</annotation></semantics></math>
+window around
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>z</mi><annotation encoding="application/x-tex">z</annotation></semantics></math>,
+the difference between the number of one’s own stones and the
+opponent’s, including the same contrast measured relative to the
+opponent’s last stone. These say whether the candidate sits in friendly
+or contested territory, that is, whether one is reinforcing strength or
+pushing into the opponent’s area.</li>
+</ul>
+<p>The leading weight encodes the coupling directly: <em>play near where
+the opponent just played</em>. As a predictor, E1 is weak. It captures
+about 2.4 of the 8.49 bits a move can carry and then plateaus, while a
+convolutional network reaches about 4.5.</p>
+<p>Prediction, however, is the wrong objective. Coupling does not
+require a good predictor of either stream; it requires a difference
+between two predictors. I fit a <em>self</em> model of stream
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+from its own past and a <em>combined</em> model that adds the other
+stream
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>’s
+past. The improvement in bits measures how much
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+leaks about
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>’s
+future beyond what
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+already knew about itself,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">p</mi></mrow><mo>=</mo><mstyle displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><msub><mrow><mi mathvariant="normal">log</mi><mo>&#8289;</mo></mrow><mn>2</mn></msub><mfrac><mrow><mrow><mi mathvariant="normal">Var</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>Y</mi><mi>t</mi></msub><mo>∣</mo><msub><mi>Y</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mrow><mi mathvariant="normal">Var</mi><mo>&#8289;</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>Y</mi><mi>t</mi></msub><mo>∣</mo><msub><mi>Y</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo>,</mo><mspace width="0.167em"></mspace><msub><mi>X</mi><mrow><mo>&lt;</mo><mi>t</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mspace width="1.0em"></mspace><mtext mathvariant="normal">(bits)</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathrm{gap} = \tfrac{1}{2}\log_2 \frac{\operatorname{Var}(Y_t \mid Y_{&lt;t})}{\operatorname{Var}(Y_t \mid Y_{&lt;t},\, X_{&lt;t})} \quad \text{(bits)}.</annotation></semantics></math></p>
+<p>The same shallow model sits on both sides, so E1’s weakness as a
+predictor does not affect its role as a yardstick. To guard against
+spurious detection I never report the gap alone. Two independent random
+walks can appear strongly correlated by accident (Phillips, 1986). I
+therefore compare the gap to a surrogate that preserves each stream’s
+own statistics while destroying the cross-alignment (Theiler et al.,
+1992), and treat any gap that does not exceed the surrogate as zero.</p>
+<h2 id="the-granger-equivalence">2.2 The Granger equivalence</h2>
+<p>The ordinary Granger test fits the same self and combined regressions
+and asks whether
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>’s
+lags jointly improve the prediction of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>,
+through a block-exclusion
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>-test,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>=</mo><mfrac><mrow><mo stretchy="false" form="prefix">(</mo><msub><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">S</mi></mrow><mtext mathvariant="normal">self</mtext></msub><mo>−</mo><msub><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">S</mi></mrow><mtext mathvariant="normal">comb</mtext></msub><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>q</mi></mrow><mrow><msub><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">S</mi></mrow><mtext mathvariant="normal">comb</mtext></msub><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo>−</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">F = \frac{(\mathrm{RSS}_{\text{self}} - \mathrm{RSS}_{\text{comb}})/q}{\mathrm{RSS}_{\text{comb}}/(n-k)},</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">S</mi><mi mathvariant="normal">S</mi></mrow><annotation encoding="application/x-tex">\mathrm{RSS}</annotation></semantics></math>
+is the residual sum of squares,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>q</mi><annotation encoding="application/x-tex">q</annotation></semantics></math>
+the number of added cross-lag regressors,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+the sample size, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+the parameters of the combined model. Under the null of no causality,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+follows an
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo>,</mo><mspace width="0.167em"></mspace><mi>n</mi><mo>−</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">F(q,\, n-k)</annotation></semantics></math>
+distribution. The gap is a monotone transform of this statistic: with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">p</mi></mrow><mo>=</mo><mi>−</mi><mstyle displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><msub><mrow><mi mathvariant="normal">log</mi><mo>&#8289;</mo></mrow><mn>2</mn></msub><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msup><mi>ρ</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{gap} = -\tfrac{1}{2}\log_2(1-\rho^2)</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>∝</mo><msup><mi>ρ</mi><mn>2</mn></msup><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><msup><mi>ρ</mi><mn>2</mn></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">F \propto \rho^2/(1-\rho^2)</annotation></semantics></math>,
+both rise with the same partial correlation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ρ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\rho^2</annotation></semantics></math>.
+In information form the gap is Geweke’s (1982) measure of linear
+feedback, and Barnett, Barrett, and Seth (2009) proved that for jointly
+Gaussian processes Granger causality equals transfer entropy,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">E</mi></mrow><mrow><mi>X</mi><mo>→</mo><mi>Y</mi></mrow></msub><mo>=</mo><mstyle displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><mi>F</mi></mrow><annotation encoding="application/x-tex">\mathrm{TE}_{X \to Y} = \tfrac{1}{2}F</annotation></semantics></math>.
+On linear-Gaussian data the gap, the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>-test,
+and transfer entropy therefore coincide.</p>
+<h2 id="probing-the-limit">2.3 Probing the limit</h2>
+<p>To establish where this equivalence holds, I generated linear systems
+driven by deliberately non-Gaussian innovations (skew-normal,
+Student-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>,
+and Laplace) and coupled them either through the conditional mean, where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+shifts
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>’s
+average, or through the conditional variance, where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+modulates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>’s
+spread without touching its average. For each system I compared the
+linear gap to a residual-dependence test based on distance correlation
+(Székely et al., 2007), which detects dependence of any order and which
+I calibrated with a permutation null.</p>
+<h2 id="baduk-and-its-controls">2.4 Baduk and its controls</h2>
+<p>On baduk I measured the black-to-white coupling under two
+representations. The scalar lens treats each coordinate axis separately.
+The board-aware lens uses the full two-dimensional move, so any
+geometric relationship can be discovered. To separate genuine coupling
+from artifacts I used three controls: a cross-fitted random forest that
+removes the full nonlinear conditional mean; a no-coupling surrogate
+that should read null; and a decisive surrogate that carries baduk’s
+exact mean coupling, is bounded to the same grid, but holds constant
+variance by construction.</p>
+<h1 id="results">3. Results</h1>
+<h2 id="the-meter-reduces-to-granger-causality">3.1 The meter reduces to
+Granger causality</h2>
+<p>Generalized, the meter reduces exactly to Granger causality. On
+synthetic Gaussian data its
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>F</mi><annotation encoding="application/x-tex">F</annotation></semantics></math>
+is identical to standard software, it converges to the analytically
+known population value as the sample grows, its false-positive rate is
+correctly sized, and direction is recovered, with the reverse channel
+reading null. By the equivalence of Section 2.2, no estimator extracts
+more coupling than this from linear-Gaussian data; transfer entropy,
+conditional mutual information, and the predictive gap all coincide.
+This is the wall. For linear-Gaussian coupling, Granger is the
+limit.</p>
+<h2 id="what-the-wall-depends-on">3.2 What the wall depends on</h2>
+<p>The equivalence requires Gaussianity, and the synthetic battery shows
+exactly what that buys. First, the wall is linear in the mean rather
+than Gaussian as such. When coupling acts through the conditional mean,
+Granger captures it completely, regardless of how non-Gaussian the noise
+is. What matters is which moment carries the coupling, not the shape of
+the noise. Coupling carried in the variance is invisible to a mean-based
+method and appears only in the residual-dependence test; this is
+volatility spillover, familiar from econometrics (Engle, 1982). Second,
+away from Gaussianity the gap is a lower bound,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><mi>F</mi><mo>≤</mo><mrow><mi mathvariant="normal">T</mi><mi mathvariant="normal">E</mi></mrow></mrow><annotation encoding="application/x-tex">\tfrac{1}{2}F \le \mathrm{TE}</annotation></semantics></math>.
+The linear gap captures only the second-order part of the coupling, so
+whatever lives in higher moments or nonlinear structure sits between
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><mi>F</mi></mrow><annotation encoding="application/x-tex">\tfrac{1}{2}F</annotation></semantics></math>
+and the true transfer entropy. That margin is where a non-Gaussian
+system can carry coupling past Granger.</p>
+<h2 id="how-far-past-granger-baduk-lives">3.3 How far past Granger baduk
+lives</h2>
+<p>Baduk is not Gaussian; its moves are bounded integers. Its linear
+coupling is captured exactly by Granger, at about 0.44 bits across both
+axes. The scalar lens leaves additional dependence that at first
+resembled a variance-channel breach, but the controls show otherwise.
+Removing the full nonlinear mean with a cross-fitted forest does not
+eliminate it, and the no-coupling surrogate reads null, so it is neither
+misspecification nor pipeline artifact. The decisive bounded,
+constant-variance surrogate reproduces only a weak version of the
+signal, so it is not genuine variance coupling either. The leftover is
+structure the scalar lens cannot express because it cannot see the
+board.</p>
+<p>The board-aware lens recovers an additional 0.06 bits, and the gain
+is purely nonlinear; a linear two-dimensional lens with cross terms adds
+nothing. The recovered coupling is local response. White’s reply lands
+within one point of black 22% of the time, within two points 41%, and
+within three 56%, and the median white-to-black distance is 2.24 against
+9.06 under a shuffled null. Two properties fix its character. It is
+sharp rather than smooth, since smooth polynomial features recover only
+4% of it while the forest recovers the rest. And it is shaped by the
+board edge, since the offset between white and black depends on where
+black sits. None of this depends on the coordinate origin, because the
+gap, the forest, and the distance tests rest on differences and
+variances that are invariant to translation and rescaling.</p>
+<p>This corrects an earlier reading in which baduk appeared to sit flat
+against the wall with no nonlinear structure. That reading was an
+artifact of the scalar representation, which is too coarse to see
+two-dimensional shape. There is a small, real, nonlinear coupling, and
+it is recognizable baduk: contact and approach play, the relationship
+E1’s distance feature already encodes. It is available only because
+baduk is not Gaussian, exactly the margin where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><mi>F</mi></mrow><annotation encoding="application/x-tex">\tfrac{1}{2}F</annotation></semantics></math>
+falls short of transfer entropy. The residual does not vanish as the
+lens improves; it shrinks. The scalar-linear lens gives 0.44 bits, the
+board-aware lens gives 0.50, and the leftover recedes toward the
+model-free transfer-entropy ceiling without reaching it. The same
+decomposition applied to a wild-baboon troop (Strandburg-Peshkin et al.,
+2015), a continuous system, returns the same verdict: a small certified
+coupling of a few hundredths of a bit, and no dramatic breach.</p>
+<h1 id="discussion">4. Discussion</h1>
+<p>I did not build a new detector. I re-derived the Granger and
+transfer-entropy family from an unusual door, a noise-like board game,
+and confirmed on a system with ground truth that it is complete for
+linear coupling and a lower bound otherwise. A plain Granger test
+matches the meter at lower cost. The instrument is neither new nor
+better than the family it re-expresses; its value is the route and the
+controlled measurement.</p>
+<p>That measurement has a clear shape. I do not break the wall; I move
+it. Each richer lens captures a little more of the same coupling and
+leaves a little less, approaching the model-free ceiling that Gaussian
+Granger sets as an equality and that a non-Gaussian system sets as a
+bound.</p>
+<p>The decomposition generalizes to any system whose agents respond to
+one another’s positions. The linear coupling splits into a same-axis
+term (L1) and a cross-axis term (L2), and only a nonlinear geometric
+term (L3) lies past the wall. It is tempting to call L2 “beyond
+Granger,” but that repeats the error my scalar meter invited. L1 and L2
+together are simply proper multivariate Granger causality, evaluated on
+the full state rather than one axis at a time, so the wall sits at L1
+plus L2. Baduk has essentially no L2, since its cross-axis linear term
+is zero, plus a little L3. A different system can sit elsewhere. In team
+sports, where players pursue one another in two dimensions, a defender
+mirroring an attacker is an L2 relationship, while spacing and formation
+are L3. The prediction is concrete and falsifiable: soccer should show
+more L2 and basketball more L3, and the meter separates them by the
+choice of features under the same surrogate-calibrated zero. I have not
+tested this, lacking tracking data, but the method has already ported
+across discrete play and animal movement, and team-sport tracking is the
+same class. The honest claim is portability: the method travels across
+coordinate-based coupling, while the specific model and lens do not.</p>
+<p>The work began because two colors of stone looked like noise and were
+not. It ends not at a wall I broke but at one I keep pushing back as the
+lens sharpens, and at a decomposition that should travel to any system
+where agents answer one another’s positions.</p>
+<h1 id="references">References</h1>
+<p>Barnett, L., Barrett, A. B., &amp; Seth, A. K. (2009). Granger
+causality and transfer entropy are equivalent for Gaussian variables.
+<em>Physical Review Letters, 103</em>(23), 238701.</p>
+<p>Engle, R. F. (1982). Autoregressive conditional heteroscedasticity
+with estimates of the variance of United Kingdom inflation.
+<em>Econometrica, 50</em>(4), 987–1007.</p>
+<p>Geweke, J. (1982). Measurement of linear dependence and feedback
+between multiple time series. <em>Journal of the American Statistical
+Association, 77</em>(378), 304–313.</p>
+<p>Granger, C. W. J. (1969). Investigating causal relations by
+econometric models and cross-spectral methods. <em>Econometrica,
+37</em>(3), 424–438.</p>
+<p>Phillips, P. C. B. (1986). Understanding spurious regressions in
+econometrics. <em>Journal of Econometrics, 33</em>(3), 311–340.</p>
+<p>Schreiber, T. (2000). Measuring information transfer. <em>Physical
+Review Letters, 85</em>(2), 461–464.</p>
+<p>Strandburg-Peshkin, A., Farine, D. R., Couzin, I. D., &amp; Crofoot,
+M. C. (2015). Shared decision-making drives collective movement in wild
+baboons. <em>Science, 348</em>(6241), 1358–1361.</p>
+<p>Székely, G. J., Rizzo, M. L., &amp; Bakirov, N. K. (2007). Measuring
+and testing dependence by correlation of distances. <em>The Annals of
+Statistics, 35</em>(6), 2769–2794.</p>
+<p>Theiler, J., Eubank, S., Longtin, A., Galdrikian, B., &amp; Farmer,
+J. D. (1992). Testing for nonlinearity in time series: the method of
+surrogate data. <em>Physica D, 58</em>(1–4), 77–94.</p>
+</body>
+</html>

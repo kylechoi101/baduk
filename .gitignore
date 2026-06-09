@@ -1,0 +1,12 @@
+# never publish source data, research, or local junk
+.DS_Store
+*.py
+*.sgf
+*.ipynb
+data/
+results/
+*.log
+.env
+.env.*
+*.pem
+*.key
