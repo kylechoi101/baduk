@@ -249,13 +249,13 @@ footer .links{margin-top:16px;display:flex;gap:18px;justify-content:center;flex-
   <h2 class="reveal d1">It began as noise that wasn't, and ends at a wall I keep pushing back.</h2>
   <p class="reveal d2 mut">I did not build a new detector. I re-derived the Granger / transfer-entropy family from an unusual door, a noise-like board game, and measured how far baduk's coupling lives past the linear wall. A plain Granger test matches the meter at lower cost; the value is the route and the controlled measurement &mdash; and a decomposition that should travel to any system where agents answer one another's positions, from wild baboons to, in principle, team sports.</p>
   <p class="reveal d3 mut" style="font-size:13px">바둑 / Baduk &middot; 圍棋 W&eacute;iq&iacute; &middot; 囲碁 Igo (Go)</p>
-  <p class="reveal d3" style="margin-top:22px"><a href="PAPER.html">Read the full paper &rarr;</a> &nbsp;&middot;&nbsp; <a href="PAPER_KO.html">한국어 &rarr;</a> &nbsp;&middot;&nbsp; <a href="PAPER.pdf">PDF</a></p>
+  <p class="reveal d3" style="margin-top:22px"><a href="PAPER.html">Read the full paper &rarr;</a> &nbsp;&middot;&nbsp; <a href="PAPER.pdf">PDF</a></p>
  </div>
 </section>
 
 <footer>
  <div>Moving the Wall &middot; coupling between two noise-like streams, from baduk to Granger causality</div>
- <div class="links"><a href="PAPER.html">Paper (EN)</a><a href="PAPER_KO.html">논문 (KO)</a><a href="PAPER.pdf">PDF</a></div>
+ <div class="links"><a href="PAPER.html">Paper</a><a href="PAPER.pdf">PDF</a></div>
 </footer>
 
 <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
@@ -421,11 +421,12 @@ function drawA2(){const cv=$("a2c"),ctx=cv.getContext("2d");sizeCanvas(cv);const
 function drawA2bars(prog){const cv=$("a2bars"),ctx=cv.getContext("2d");sizeCanvas(cv);const W=cv.width/DPR,H=cv.height/DPR;
   ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);
   const items=[["uniform ceiling",8.49],["deep net (accessible)",4.5],["E1 (this equation)",2.4]];
-  const cols=["#46506a","#5cc6f5","#e8493c"],L=152,top=14,bh=30,gap=14,full=W-L-86,maxv=8.49;
-  items.forEach((it,i)=>{const y=top+i*(bh+gap);ctx.fillStyle="#aeb9cc";ctx.font="13px system-ui";ctx.textAlign="right";ctx.fillText(it[0],L-12,y+bh/2+4);ctx.textAlign="start";
-    ctx.fillStyle="#10182a";roundRect(ctx,L,y,full,bh,6);ctx.fill();
-    const w=full*(it[1]/maxv)*prog;ctx.fillStyle=cols[i];roundRect(ctx,L,y,Math.max(2,w),bh,6);ctx.fill();
-    ctx.fillStyle="#fff";ctx.font="bold 13px ui-monospace,monospace";ctx.fillText(it[1].toFixed(2)+" bits",L+w+8,y+bh/2+4);});
+  const sc=W/760;
+  const cols=["#46506a","#5cc6f5","#e8493c"],L=152*sc,top=14*sc,bh=30*sc,gap=14*sc,full=W-L-86*sc,maxv=8.49;
+  items.forEach((it,i)=>{const y=top+i*(bh+gap);ctx.fillStyle="#aeb9cc";ctx.font=`${13*sc}px system-ui`;ctx.textAlign="right";ctx.fillText(it[0],L-12*sc,y+bh/2+4*sc);ctx.textAlign="start";
+    ctx.fillStyle="#10182a";roundRect(ctx,L,y,full,bh,6*sc);ctx.fill();
+    const w=full*(it[1]/maxv)*prog;ctx.fillStyle=cols[i];roundRect(ctx,L,y,Math.max(2*sc,w),bh,6*sc);ctx.fill();
+    ctx.fillStyle="#fff";ctx.font=`bold ${13*sc}px ui-monospace,monospace`;ctx.fillText(it[1].toFixed(2)+" bits",L+w+8*sc,y+bh/2+4*sc);});
 }
 
 /* ACT 3 */
